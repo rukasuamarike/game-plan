@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "243406368843",
+    "project_id": "take-break-9d802",
+    "storage_bucket": "take-break-9d802.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:243406368843:android:8b1a80e8352f8aa6e61dce",
+        "android_client_info": {
+          "package_name": "com.example.take_break"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "243406368843-adejeil87n4et30afgfb2ibbp39rd9si.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDeodORPpmZUVwf0DIW5AZ2PgUsl77xKPk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "243406368843-adejeil87n4et30afgfb2ibbp39rd9si.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "243406368843-uu4b32lta8qotr1gh59apvm4f9ms0a8c.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.takeBreak"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
