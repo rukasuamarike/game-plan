@@ -278,7 +278,7 @@ class _InputFormPageState extends State<InputFormPage> {
           );
 
           return Center(
-            child: Row(
+            child: Column(
               children: [
                 Expanded(flex: 2, child: searchbar),
                 Expanded(flex: 6, child: map),
