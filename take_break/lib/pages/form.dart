@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
 
@@ -27,9 +28,10 @@ class _InputFormPageState extends State<InputFormPage> {
   CollectionReference jobsRef = FirebaseFirestore.instance.collection("jobs");
   final Location _location = Location();
   String? _sessionToken = null;
-  String _latlng = "37.353113,-121.942112";
+  final LatLng _initial = const LatLng(37.3490496, -121.9388039);
   late GoogleMapController _gmcontroller;
   var _autoLoc = TextEditingController();
+  var _latlng = "37.341222,-121.9248333";
   List<dynamic> _placeList = [];
   @override
   void initState() {
@@ -42,10 +44,22 @@ class _InputFormPageState extends State<InputFormPage> {
 
   void _onMapCreated(GoogleMapController _cntlr) {
     _gmcontroller = _cntlr;
+
     _location.onLocationChanged.listen((l) {
       print(l.latitude);
       print(l.longitude);
     });
+  }
+
+  void updatepos(String latlng) {
+    _gmcontroller.animateCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(
+            target: LatLng(latlng.splitMapJoin(",")[0] as double,
+                latlng.splitMapJoin(",")[1] as double),
+            zoom: 19),
+      ),
+    );
   }
 
   _onChanged() {
@@ -107,8 +121,10 @@ class _InputFormPageState extends State<InputFormPage> {
     return selectedTime;
   }
 
+  final ScrollController _scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
+    LocationData location = Provider.of<LocationData>(context);
     return Container(
         padding: const EdgeInsets.all(15),
         height: MediaQuery.of(context).size.height,
@@ -141,17 +157,15 @@ class _InputFormPageState extends State<InputFormPage> {
                     String req =
                         "https://maps.googleapis.com/maps/api/place/details/json?place_id=${_placeList[index]["place_id"]}&key=$kPLACES_API_KEY";
                     var response = await http.get(Uri.parse(req)).then(
-                        (value) =>
-                            "${jsonDecode(value.body)["result"]["geometry"]["location"]["lat"].toString()},${jsonDecode(value.body)["result"]["geometry"]["location"]["lng"].toString()}"
-                        //["geometry"]["location"];
-                        //var g = "${k["lat"].toString()},${k["lon"].toString()}";
+                        (value) => jsonDecode(value.body)["result"]["geometry"]
+                            ["location"]);
 
-                        );
-
-                    print(response);
+                    print((response["lat"] as double).toString());
 
                     setState(() {
-                      _latlng = response;
+                      _latlng =
+                          "${response["lat"] as double},${response["lng"] as double}";
+                      updatepos(_latlng);
                     });
                   },
                 );
