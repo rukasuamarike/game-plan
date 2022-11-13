@@ -30,19 +30,26 @@ class GButtonState extends State<GButton> {
 
   Widget build(BuildContext context) {
     return Container(
+      alignment: Alignment.center,
+      padding: const EdgeInsets.all(30),
       child: _isSigningIn
           ? CircularProgressIndicator(
               valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
             )
           : OutlinedButton(
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.blue),
-                shape: MaterialStateProperty.all(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(40),
-                  ),
-                ),
-              ),
+                  backgroundColor: MaterialStateProperty.resolveWith((states) {
+                    if (states.contains(MaterialState.pressed)) {
+                      return Colors.grey;
+                    }
+                    return Color.fromRGBO(236, 217, 186, 100);
+                  }),
+                  alignment: Alignment.center,
+                  fixedSize: MaterialStateProperty.all(Size(289, 50)),
+                  shape: MaterialStateProperty.all(
+                    RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(40)),
+                  )),
               onPressed: () async {
                 setState(() {
                   _isSigningIn = true;
@@ -85,22 +92,24 @@ class GButtonState extends State<GButton> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Expanded(
+                    const Expanded(
                       child: Image(
                         image: AssetImage("images/google.png"),
                         height: 35,
                         width: 35,
+                        alignment: Alignment.center,
                       ),
                     ),
                     Expanded(
                       flex: 2,
                       child: Text(
-                        '${widget.isExiting ? "Sign Out of" : "Sign In with"} google',
-                        style: TextStyle(
+                        '${widget.isExiting ? "Sign Out of" : "Sign In with"} Google',
+                        style: const TextStyle(
                           fontSize: 20,
-                          color: Colors.white,
+                          color: Colors.black,
                           fontWeight: FontWeight.w600,
                         ),
+                        textAlign: TextAlign.right,
                       ),
                     )
                   ],
