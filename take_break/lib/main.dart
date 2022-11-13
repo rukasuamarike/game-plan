@@ -17,9 +17,7 @@ void main() async {
       handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
     return HomePage();
   });
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,

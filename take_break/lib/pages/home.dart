@@ -20,31 +20,36 @@ class _HomePageState extends State<HomePage> {
 
   Widget build(BuildContext context) {
     User? user = Provider.of<User?>(context);
-    return Scaffold(body: SafeArea(child: Builder(
-      builder: (context) {
-        if (user == null) {
-          return const LoginPage();
-        }
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("nice"),
+      ),
+      body: SafeArea(child: Builder(
+        builder: (context) {
+          if (user == null) {
+            return LoginPage();
+          }
 
-        Stream<UserData> userData = db
-            .doc(user.uid)
-            .snapshots()
-            .map((snap) => UserData.fromFirestore(snap));
+          Stream<UserData> userData = db
+              .doc(user.uid)
+              .snapshots()
+              .map((snap) => UserData.fromFirestore(snap));
 
-        return MultiProvider(
-          providers: [
-            StreamProvider<UserData>.value(
-              initialData:
-                  UserData(id: "", email: "", firstname: "", lastname: ""),
-              value: db
-                  .doc(user.uid)
-                  .snapshots()
-                  .map((snap) => UserData.fromFirestore(snap)),
-            )
-          ],
-          child: Text("you signed in"),
-        );
-      },
-    )));
+          return MultiProvider(
+            providers: [
+              StreamProvider<UserData>.value(
+                initialData:
+                    UserData(id: "", email: "", firstname: "", lastname: ""),
+                value: db
+                    .doc(user.uid)
+                    .snapshots()
+                    .map((snap) => UserData.fromFirestore(snap)),
+              )
+            ],
+            child: Text("you signed in"),
+          );
+        },
+      )),
+    );
   }
 }

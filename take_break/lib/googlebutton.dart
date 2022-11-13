@@ -29,15 +29,14 @@ class GButtonState extends State<GButton> {
   }
 
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16.0),
+    return Container(
       child: _isSigningIn
           ? CircularProgressIndicator(
               valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
             )
           : OutlinedButton(
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.amber),
+                backgroundColor: MaterialStateProperty.all(Colors.blue),
                 shape: MaterialStateProperty.all(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(40),
@@ -84,7 +83,6 @@ class GButtonState extends State<GButton> {
               },
               child: SafeArea(
                 child: Row(
-                  mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Expanded(
@@ -100,7 +98,7 @@ class GButtonState extends State<GButton> {
                         '${widget.isExiting ? "Sign Out of" : "Sign In with"} google',
                         style: TextStyle(
                           fontSize: 20,
-                          color: Colors.black,
+                          color: Colors.white,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
