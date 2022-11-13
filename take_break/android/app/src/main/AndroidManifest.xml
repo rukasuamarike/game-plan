@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.take_break">
+    
    <application
         android:label="take_break"
         android:name="${applicationName}"
