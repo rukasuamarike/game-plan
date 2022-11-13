@@ -54,6 +54,8 @@ class _MyAppState extends State<MyApp> {
           StreamProvider<User?>.value(
               value: FirebaseAuth.instance.authStateChanges(),
               initialData: null),
+          StreamProvider<LocationData?>.value(
+              value: locationStream, initialData: null),
         ],
         child: MaterialApp(
             onGenerateRoute: router.generator,

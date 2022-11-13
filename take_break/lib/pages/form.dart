@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
@@ -26,6 +27,8 @@ class _InputFormPageState extends State<InputFormPage> {
   CollectionReference jobsRef = FirebaseFirestore.instance.collection("jobs");
   final Location _location = Location();
   String? _sessionToken = null;
+  String _latlng = "37.353113,-121.942112";
+  late GoogleMapController _gmcontroller;
   var _autoLoc = TextEditingController();
   List<dynamic> _placeList = [];
   @override
@@ -35,6 +38,14 @@ class _InputFormPageState extends State<InputFormPage> {
     });
     dateController.text = ""; //set the initial value of text field
     super.initState();
+  }
+
+  void _onMapCreated(GoogleMapController _cntlr) {
+    _gmcontroller = _cntlr;
+    _location.onLocationChanged.listen((l) {
+      print(l.latitude);
+      print(l.longitude);
+    });
   }
 
   _onChanged() {
@@ -48,7 +59,7 @@ class _InputFormPageState extends State<InputFormPage> {
 
   void getSuggestion(String input) async {
     String kPLACES_API_KEY = "AIzaSyD5DqXn4kkLZAks-koDJEnR8FeMi1fnMvo";
-    String type = '(regions)';
+
     String baseURL =
         'https://maps.googleapis.com/maps/api/place/autocomplete/json';
     String req =
@@ -66,6 +77,7 @@ class _InputFormPageState extends State<InputFormPage> {
   }
 
   Future<DateTime> _selectDate(BuildContext context) async {
+    print(DateTime.now().toUtc());
     final selected = await showDatePicker(
       context: context,
       initialDate: selectedStart,
@@ -123,6 +135,25 @@ class _InputFormPageState extends State<InputFormPage> {
               itemBuilder: (context, index) {
                 return ListTile(
                   title: Text(_placeList[index]["description"].toString()),
+                  onTap: () async {
+                    String kPLACES_API_KEY =
+                        "AIzaSyD5DqXn4kkLZAks-koDJEnR8FeMi1fnMvo";
+                    String req =
+                        "https://maps.googleapis.com/maps/api/place/details/json?place_id=${_placeList[index]["place_id"]}&key=$kPLACES_API_KEY";
+                    var response = await http.get(Uri.parse(req)).then(
+                        (value) =>
+                            "${jsonDecode(value.body)["result"]["geometry"]["location"]["lat"].toString()},${jsonDecode(value.body)["result"]["geometry"]["location"]["lng"].toString()}"
+                        //["geometry"]["location"];
+                        //var g = "${k["lat"].toString()},${k["lon"].toString()}";
+
+                        );
+
+                    print(response);
+
+                    setState(() {
+                      _latlng = response;
+                    });
+                  },
                 );
               },
             ),

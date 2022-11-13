@@ -38,18 +38,20 @@ dependencies:
   cupertino_icons: ^1.0.2
   firebase_core: ^2.2.0
   firebase_auth: ^4.1.2
-  cloud_firestore: ^4.0.5
+  cloud_firestore: ^3.1.8
   google_sign_in: ^5.4.2
   provider: ^6.0.4
   fluro: ^2.0.4
   flutter_time_picker_spinner: ^2.0.0
   location: ^4.4.0
   http: ^0.13.5
-  
+  geoflutterfire: ^2.2.3
+  rxdart: ^0.27.0
   uuid: ^3.0.6
   flutter_google_places: 0.3.0
-  rxdart: ^0.26.0
   html: ^0.15.1
+ 
+  google_maps_flutter: ^2.1.1
 
 dev_dependencies:
   flutter_test:
