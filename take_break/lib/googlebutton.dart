@@ -89,7 +89,7 @@ class GButtonState extends State<GButton> {
                   children: <Widget>[
                     Expanded(
                       child: Image(
-                        image: AssetImage("google.png"),
+                        image: AssetImage("images/google.png"),
                         height: 35,
                         width: 35,
                       ),
