@@ -132,6 +132,7 @@ class _InputFormPageState extends State<InputFormPage> {
             child: Column(
           children: [
             TextField(
+              style: TextStyle(color: Colors.black),
               controller: _autoLoc,
               decoration: InputDecoration(
                 hintText: "Seek your location here",

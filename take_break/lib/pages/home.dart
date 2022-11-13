@@ -22,13 +22,19 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     User? user = Provider.of<User?>(context);
     return Scaffold(
+      backgroundColor: Color.fromRGBO(236, 217, 186, 30),
       appBar: AppBar(
-        title: Text("nice"),
+        title: const Text(
+          "Game Plan",
+          style: TextStyle(height: 1, fontSize: 30),
+        ),
+        backgroundColor: Color.fromARGB(255, 40, 128, 43),
+        foregroundColor: Colors.white,
       ),
       body: SafeArea(child: Builder(
         builder: (context) {
           if (user == null) {
-            return LoginPage();
+            return const LoginPage();
           }
 
           Stream<UserData> userData = db
@@ -47,7 +53,7 @@ class _HomePageState extends State<HomePage> {
                     .map((snap) => UserData.fromFirestore(snap)),
               )
             ],
-            child: InputFormPage(),
+            child: const InputFormPage(),
           );
         },
       )),
