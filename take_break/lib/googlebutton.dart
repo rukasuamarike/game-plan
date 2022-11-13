@@ -97,7 +97,7 @@ class GButtonState extends State<GButton> {
                     Expanded(
                       flex: 2,
                       child: Text(
-                        '${widget.isExiting ? "Sign Out of" : "Sign In with"} "google"}',
+                        '${widget.isExiting ? "Sign Out of" : "Sign In with"} google',
                         style: TextStyle(
                           fontSize: 20,
                           color: Colors.black,
