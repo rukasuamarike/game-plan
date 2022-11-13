@@ -5,6 +5,7 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:provider/provider.dart';
 import 'package:take_break/classes/user.dart';
+import 'package:take_break/pages/form.dart';
 import 'package:take_break/pages/login.dart';
 
 class HomePage extends StatefulWidget {
@@ -46,7 +47,7 @@ class _HomePageState extends State<HomePage> {
                     .map((snap) => UserData.fromFirestore(snap)),
               )
             ],
-            child: Text("you signed in"),
+            child: InputFormPage(),
           );
         },
       )),
