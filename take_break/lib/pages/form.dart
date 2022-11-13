@@ -283,7 +283,7 @@ class _InputFormPageState extends State<InputFormPage> {
             height: height,
             child: Column(
               children: [
-                Expanded(flex: 2, child: searchbar),
+                Expanded(flex: 4, child: searchbar),
                 SizedBox(
                   height: 20,
                 ),
