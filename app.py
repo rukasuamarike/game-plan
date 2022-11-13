@@ -37,8 +37,8 @@ def get_trip(latitude, longtitude, dateTime):
         response = requests.request("GET", PLACES_URL, headers=headers, data=payload).json().get("results")
 
         for place in response:
-            place_id = place["place_id"]                                  
 
+            # place_id = place["place_id"]                                  
             # PLACE_URL = f"https://maps.googleapis.com/maps/api/place/details/json?place_id={place_id}&fields=name%2Cformatted_address%2Cprice_level%2Copening_hours%2Cgeometry%2Ctypes&key={MAPS_API_TOKEN}"
             # response = requests.request("GET", PLACE_URL, headers=headers, data=payload).json().get("result")
 
@@ -50,8 +50,16 @@ def get_trip(latitude, longtitude, dateTime):
             location["types"] = place.get("types")
             location["name"] = place.get("name")
             location["price"] = place.get("price_level")
-            #location["open_time"] = response["opening_hours"]["periods"][DAY_OF_WEEK].get("open").get("time")
-            #location["close_time"] = response["opening_hours"]["periods"][DAY_OF_WEEK].get("close").get("time")
+
+            # Calculate rating based on average rating and number of ratings
+            average_rating, rating_count = place.get("rating"), place.get("user_ratings_total")
+            if type(average_rating) == type(0.1) and type(rating_count) == type(1):
+                location["rating"] = (3*2+rating_count*average_rating)/(3+rating_count)
+                if location["rating"] < 3:
+                    break
+            
+            # location["open_time"] = response["opening_hours"]["periods"][1].get("open").get("time")
+            # location["close_time"] = response["opening_hours"]["periods"][1].get("close").get("time")
 
             # Find route and add travel time to location object
             location["latitude"] = place["geometry"]["location"]["lat"]
