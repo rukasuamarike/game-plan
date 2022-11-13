@@ -292,6 +292,7 @@ class _InputFormPageState extends State<InputFormPage> {
                   height: 20,
                 ),
                 Expanded(flex: 4, child: forms),
+                ElevatedButton(onPressed: () {}, child: Text("submit"))
               ],
             ),
           )));
