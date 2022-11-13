@@ -56,93 +56,105 @@ class _InputFormPageState extends State<InputFormPage> {
   Widget build(BuildContext context) {
     return Container(
         padding: const EdgeInsets.all(15),
-        height: 150,
+        height: MediaQuery.of(context).size.height / 2,
         child: Center(
             child: Column(
           children: [
-            TextField(
-              controller: dateController, //editing controller of this TextField
-              decoration: const InputDecoration(
-                  icon: Icon(Icons.calendar_today), //icon of text field
-                  labelText: "Enter Date" //label text of field
-                  ),
-              readOnly: true, // when true user cannot edit text
-              onTap: () async {
-                DateTime pickdate = await _selectDate(context);
-
-                if (pickdate != null) {
-                  print(
-                      pickdate); //get the picked date in the format => 2022-07-04 00:00:00.000
-                  String formattedDate = pickdate
-                      .toString(); // format date in required form here we use yyyy-MM-dd that means time is removed
-                  print(
-                      formattedDate); //formatted date output using intl package =>  2022-07-04
-                  //You can format date as per your need
-                  setState(() {
-                    dateController.text =
-                        formattedDate; //set foratted date to TextField value.
-                  });
-                } else {
-                  print("Date is not selected");
-                }
-              },
-            ),
-            TextField(
-              controller: timeController, //editing controller of this TextField
-              decoration: const InputDecoration(
-                  icon: Icon(Icons.access_time_outlined), //icon of text field
-                  labelText: "Enter Start Time" //label text of field
-                  ),
-              readOnly: true, // when true user cannot edit text
-              onTap: () async {
-                TimeOfDay pickTime = await _selectTime(context);
-
-                if (pickTime != null) {
-                  print(
-                      pickTime); //get the picked date in the format => 2022-07-04 00:00:00.000
-                  print(pickTime
-                      .toString()); //formatted date output using intl package =>  2022-07-04
-                  //You can format date as per your need
-                  setState(() {
-                    timeController.text = pickTime
-                        .toString(); //set foratted date to TextField value.
-                  });
-                } else {
-                  print("Time is not selected");
-                }
-              },
-            ),
-            TextField(
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
                 controller:
-                    endTimeController, //editing controller of this TextField
+                    dateController, //editing controller of this TextField
                 decoration: const InputDecoration(
-                    icon: Icon(Icons.access_time_outlined), //icon of text field
-                    labelText: "Enter End Time" //label text of field
+                    icon: Icon(Icons.calendar_today), //icon of text field
+                    labelText: "Enter Date" //label text of field
                     ),
                 readOnly: true, // when true user cannot edit text
                 onTap: () async {
-                  final picktime = await showTimePicker(
-                          context: context,
-                          initialTime: selectedTime.replacing(
-                              hour: selectedTime.hour + 1),
-                          initialEntryMode: TimePickerEntryMode.input)
-                      .then((value) =>
-                          value!.hour > selectedTime.hour ? value : null);
+                  DateTime pickdate = await _selectDate(context);
 
-                  if (picktime != null) {
+                  if (pickdate != null) {
                     print(
-                        picktime); //get the picked date in the format => 2022-07-04 00:00:00.000
-                    print(picktime
+                        pickdate); //get the picked date in the format => 2022-07-04 00:00:00.000
+                    String formattedDate = pickdate
+                        .toString(); // format date in required form here we use yyyy-MM-dd that means time is removed
+                    print(
+                        formattedDate); //formatted date output using intl package =>  2022-07-04
+                    //You can format date as per your need
+                    setState(() {
+                      dateController.text =
+                          formattedDate; //set foratted date to TextField value.
+                    });
+                  } else {
+                    print("Date is not selected");
+                  }
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                controller:
+                    timeController, //editing controller of this TextField
+                decoration: const InputDecoration(
+                    icon: Icon(Icons.access_time_outlined), //icon of text field
+                    labelText: "Enter Start Time" //label text of field
+                    ),
+                readOnly: true, // when true user cannot edit text
+                onTap: () async {
+                  TimeOfDay pickTime = await _selectTime(context);
+
+                  if (pickTime != null) {
+                    print(
+                        pickTime); //get the picked date in the format => 2022-07-04 00:00:00.000
+                    print(pickTime
                         .toString()); //formatted date output using intl package =>  2022-07-04
                     //You can format date as per your need
                     setState(() {
-                      endTimeController.text = picktime
+                      timeController.text = pickTime
                           .toString(); //set foratted date to TextField value.
                     });
                   } else {
                     print("Time is not selected");
                   }
-                }),
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                  controller:
+                      endTimeController, //editing controller of this TextField
+                  decoration: const InputDecoration(
+                      icon:
+                          Icon(Icons.access_time_outlined), //icon of text field
+                      labelText: "Enter End Time" //label text of field
+                      ),
+                  readOnly: true, // when true user cannot edit text
+                  onTap: () async {
+                    final picktime = await showTimePicker(
+                            context: context,
+                            initialTime: selectedTime.replacing(
+                                hour: selectedTime.hour + 1),
+                            initialEntryMode: TimePickerEntryMode.input)
+                        .then((value) =>
+                            value!.hour > selectedTime.hour ? value : null);
+
+                    if (picktime != null) {
+                      print(
+                          picktime); //get the picked date in the format => 2022-07-04 00:00:00.000
+                      print(picktime
+                          .toString()); //formatted date output using intl package =>  2022-07-04
+                      //You can format date as per your need
+                      setState(() {
+                        endTimeController.text = picktime
+                            .toString(); //set foratted date to TextField value.
+                      });
+                    } else {
+                      print("Time is not selected");
+                    }
+                  }),
+            ),
           ],
         )));
   }
