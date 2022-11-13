@@ -125,9 +125,8 @@ class _InputFormPageState extends State<InputFormPage> {
     return Container(
         padding: const EdgeInsets.all(15),
         height: MediaQuery.of(context).size.height,
-        child: Center(
-            child: Column(
-          children: [
+        child: Builder(builder: (context) {
+          Widget searchbar = Column(children: [
             TextField(
               style: TextStyle(color: Colors.black),
               controller: _autoLoc,
@@ -141,12 +140,6 @@ class _InputFormPageState extends State<InputFormPage> {
                   onPressed: () {},
                 ),
               ),
-            ),
-            GoogleMap(
-              initialCameraPosition: CameraPosition(target: _initial, zoom: 15),
-              mapType: MapType.normal,
-              onMapCreated: _onMapCreated,
-              myLocationEnabled: true,
             ),
             ListView.builder(
               physics: NeverScrollableScrollPhysics(),
@@ -174,103 +167,125 @@ class _InputFormPageState extends State<InputFormPage> {
                   },
                 );
               },
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextField(
-                controller:
-                    dateController, //editing controller of this TextField
-                decoration: const InputDecoration(
-                    icon: Icon(Icons.calendar_today), //icon of text field
-                    labelText: "Enter Date" //label text of field
-                    ),
-                readOnly: true, // when true user cannot edit text
-                onTap: () async {
-                  DateTime pickdate = await _selectDate(context);
-
-                  if (pickdate != null) {
-                    print(
-                        pickdate); //get the picked date in the format => 2022-07-04 00:00:00.000
-                    String formattedDate = pickdate
-                        .toString(); // format date in required form here we use yyyy-MM-dd that means time is removed
-                    print(
-                        formattedDate); //formatted date output using intl package =>  2022-07-04
-                    //You can format date as per your need
-                    setState(() {
-                      dateController.text =
-                          formattedDate; //set foratted date to TextField value.
-                    });
-                  } else {
-                    print("Date is not selected");
-                  }
-                },
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextField(
-                controller:
-                    timeController, //editing controller of this TextField
-                decoration: const InputDecoration(
-                    icon: Icon(Icons.access_time_outlined), //icon of text field
-                    labelText: "Enter Start Time" //label text of field
-                    ),
-                readOnly: true, // when true user cannot edit text
-                onTap: () async {
-                  TimeOfDay pickTime = await _selectTime(context);
-
-                  if (pickTime != null) {
-                    print(
-                        pickTime); //get the picked date in the format => 2022-07-04 00:00:00.000
-                    print(pickTime
-                        .toString()); //formatted date output using intl package =>  2022-07-04
-                    //You can format date as per your need
-                    setState(() {
-                      timeController.text =
-                          "${pickTime.hour}:${pickTime.minute}"; //set foratted date to TextField value.
-                    });
-                  } else {
-                    print("Time is not selected");
-                  }
-                },
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextField(
+            )
+          ]);
+          Widget map = GoogleMap(
+            initialCameraPosition: CameraPosition(target: _initial, zoom: 15),
+            mapType: MapType.normal,
+            onMapCreated: _onMapCreated,
+            myLocationEnabled: true,
+          );
+          var height = MediaQuery.of(context).size.height;
+          Widget forms = Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
                   controller:
-                      endTimeController, //editing controller of this TextField
+                      dateController, //editing controller of this TextField
                   decoration: const InputDecoration(
-                      icon:
-                          Icon(Icons.access_time_outlined), //icon of text field
-                      labelText: "Enter End Time" //label text of field
+                      icon: Icon(Icons.calendar_today), //icon of text field
+                      labelText: "Enter Date" //label text of field
                       ),
                   readOnly: true, // when true user cannot edit text
                   onTap: () async {
-                    final picktime = await showTimePicker(
-                            context: context,
-                            initialTime: selectedTime.replacing(
-                                hour: selectedTime.hour + 1),
-                            initialEntryMode: TimePickerEntryMode.input)
-                        .then((value) =>
-                            value!.hour > selectedTime.hour ? value : null);
+                    DateTime pickdate = await _selectDate(context);
 
-                    if (picktime != null) {
+                    if (pickdate != null) {
                       print(
-                          picktime); //get the picked date in the format => 2022-07-04 00:00:00.000
-                      print(picktime
+                          pickdate); //get the picked date in the format => 2022-07-04 00:00:00.000
+                      String formattedDate = pickdate
+                          .toString(); // format date in required form here we use yyyy-MM-dd that means time is removed
+                      print(
+                          formattedDate); //formatted date output using intl package =>  2022-07-04
+                      //You can format date as per your need
+                      setState(() {
+                        dateController.text =
+                            formattedDate; //set foratted date to TextField value.
+                      });
+                    } else {
+                      print("Date is not selected");
+                    }
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  controller:
+                      timeController, //editing controller of this TextField
+                  decoration: const InputDecoration(
+                      icon:
+                          Icon(Icons.access_time_outlined), //icon of text field
+                      labelText: "Enter Start Time" //label text of field
+                      ),
+                  readOnly: true, // when true user cannot edit text
+                  onTap: () async {
+                    TimeOfDay pickTime = await _selectTime(context);
+
+                    if (pickTime != null) {
+                      print(
+                          pickTime); //get the picked date in the format => 2022-07-04 00:00:00.000
+                      print(pickTime
                           .toString()); //formatted date output using intl package =>  2022-07-04
                       //You can format date as per your need
                       setState(() {
-                        endTimeController.text =
-                            "${picktime.hour}:${picktime.minute}";
+                        timeController.text =
+                            "${pickTime.hour}:${pickTime.minute}"; //set foratted date to TextField value.
                       });
                     } else {
                       print("Time is not selected");
                     }
-                  }),
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                    controller:
+                        endTimeController, //editing controller of this TextField
+                    decoration: const InputDecoration(
+                        icon: Icon(
+                            Icons.access_time_outlined), //icon of text field
+                        labelText: "Enter End Time" //label text of field
+                        ),
+                    readOnly: true, // when true user cannot edit text
+                    onTap: () async {
+                      final picktime = await showTimePicker(
+                              context: context,
+                              initialTime: selectedTime.replacing(
+                                  hour: selectedTime.hour + 1),
+                              initialEntryMode: TimePickerEntryMode.input)
+                          .then((value) =>
+                              value!.hour > selectedTime.hour ? value : null);
+
+                      if (picktime != null) {
+                        print(
+                            picktime); //get the picked date in the format => 2022-07-04 00:00:00.000
+                        print(picktime
+                            .toString()); //formatted date output using intl package =>  2022-07-04
+                        //You can format date as per your need
+                        setState(() {
+                          endTimeController.text =
+                              "${picktime.hour}:${picktime.minute}";
+                        });
+                      } else {
+                        print("Time is not selected");
+                      }
+                    }),
+              ),
+            ],
+          );
+
+          return Center(
+            child: Row(
+              children: [
+                Expanded(flex: 2, child: searchbar),
+                Expanded(flex: 6, child: map),
+                Expanded(flex: 4, child: forms),
+              ],
             ),
-          ],
-        )));
+          );
+        }));
   }
 }
