@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import 'classes/authenticate.dart';
-import 'classes/user.dart';
+import '../classes/authenticate.dart';
+import '../classes/user.dart';
 
 class GButton extends StatefulWidget {
   final bool isExiting; //logging out?

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:take_break/classes/user.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:take_break/googlebutton.dart';
+import 'package:take_break/widgets/googlebutton.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -44,7 +44,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        child: GButton(
+        child: const GButton(
       isExiting: false,
     ));
   }

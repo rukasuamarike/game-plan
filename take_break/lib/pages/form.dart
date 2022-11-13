@@ -1,5 +1,10 @@
+import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
+import 'package:location/location.dart';
+import 'package:uuid/uuid.dart';
+import 'package:http/http.dart' as http;
 
 class InputFormPage extends StatefulWidget {
   const InputFormPage({Key? key}) : super(key: key);
@@ -12,14 +17,52 @@ class _InputFormPageState extends State<InputFormPage> {
   TextEditingController dateController = TextEditingController();
   TextEditingController timeController = TextEditingController();
   TextEditingController endTimeController = TextEditingController();
+  TextEditingController autoLoc = TextEditingController();
   DateTime selectedStart = DateTime.now();
   TimeOfDay selectedTime = TimeOfDay.now();
   TimeOfDay selectedEnd = TimeOfDay.now();
   bool tset = false;
+
+  CollectionReference jobsRef = FirebaseFirestore.instance.collection("jobs");
+  final Location _location = Location();
+  String? _sessionToken = null;
+  var _autoLoc = TextEditingController();
+  List<dynamic> _placeList = [];
   @override
   void initState() {
+    _autoLoc.addListener(() {
+      _onChanged();
+    });
     dateController.text = ""; //set the initial value of text field
     super.initState();
+  }
+
+  _onChanged() {
+    if (_sessionToken == null) {
+      setState(() {
+        _sessionToken = Uuid().v4();
+      });
+    }
+    getSuggestion(_autoLoc.text);
+  }
+
+  void getSuggestion(String input) async {
+    String kPLACES_API_KEY = "AIzaSyD5DqXn4kkLZAks-koDJEnR8FeMi1fnMvo";
+    String type = '(regions)';
+    String baseURL =
+        'https://maps.googleapis.com/maps/api/place/autocomplete/json';
+    String req =
+        '$baseURL?input=$input&key=$kPLACES_API_KEY&sessiontoken=$_sessionToken';
+    var response = await http.get(Uri.parse(req));
+    if (response.statusCode == 200) {
+      setState(() {
+        _placeList = jsonDecode(response.body)['predictions'];
+      });
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load suggestions');
+    }
   }
 
   Future<DateTime> _selectDate(BuildContext context) async {
@@ -56,10 +99,33 @@ class _InputFormPageState extends State<InputFormPage> {
   Widget build(BuildContext context) {
     return Container(
         padding: const EdgeInsets.all(15),
-        height: MediaQuery.of(context).size.height / 2,
+        height: MediaQuery.of(context).size.height,
         child: Center(
             child: Column(
           children: [
+            TextField(
+              controller: _autoLoc,
+              decoration: InputDecoration(
+                hintText: "Seek your location here",
+                focusColor: Colors.white,
+                floatingLabelBehavior: FloatingLabelBehavior.never,
+                prefixIcon: Icon(Icons.map),
+                suffixIcon: IconButton(
+                  icon: Icon(Icons.cancel),
+                  onPressed: () {},
+                ),
+              ),
+            ),
+            ListView.builder(
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: _placeList.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(_placeList[index]["description"].toString()),
+                );
+              },
+            ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextField(
@@ -111,8 +177,8 @@ class _InputFormPageState extends State<InputFormPage> {
                         .toString()); //formatted date output using intl package =>  2022-07-04
                     //You can format date as per your need
                     setState(() {
-                      timeController.text = pickTime
-                          .toString(); //set foratted date to TextField value.
+                      timeController.text =
+                          "${pickTime.hour}:${pickTime.minute}"; //set foratted date to TextField value.
                     });
                   } else {
                     print("Time is not selected");
@@ -147,8 +213,8 @@ class _InputFormPageState extends State<InputFormPage> {
                           .toString()); //formatted date output using intl package =>  2022-07-04
                       //You can format date as per your need
                       setState(() {
-                        endTimeController.text = picktime
-                            .toString(); //set foratted date to TextField value.
+                        endTimeController.text =
+                            "${picktime.hour}:${picktime.minute}";
                       });
                     } else {
                       print("Time is not selected");
