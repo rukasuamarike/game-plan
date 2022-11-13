@@ -31,7 +31,7 @@ class _InputFormPageState extends State<InputFormPage> {
   final LatLng _initial = const LatLng(37.3490496, -121.9388039);
   late GoogleMapController _gmcontroller;
   var _autoLoc = TextEditingController();
-  var _latlng = "37.341222,-121.9248333";
+  LatLng _latlng = LatLng(37.341222, -121.9248333);
   List<dynamic> _placeList = [];
   @override
   void initState() {
@@ -51,13 +51,10 @@ class _InputFormPageState extends State<InputFormPage> {
     });
   }
 
-  void updatepos(String latlng) {
+  void updatepos(LatLng pos) {
     _gmcontroller.animateCamera(
       CameraUpdate.newCameraPosition(
-        CameraPosition(
-            target: LatLng(latlng.splitMapJoin(",")[0] as double,
-                latlng.splitMapJoin(",")[1] as double),
-            zoom: 19),
+        CameraPosition(target: pos, zoom: 19),
       ),
     );
   }
@@ -145,6 +142,12 @@ class _InputFormPageState extends State<InputFormPage> {
                 ),
               ),
             ),
+            GoogleMap(
+              initialCameraPosition: CameraPosition(target: _initial, zoom: 15),
+              mapType: MapType.normal,
+              onMapCreated: _onMapCreated,
+              myLocationEnabled: true,
+            ),
             ListView.builder(
               physics: NeverScrollableScrollPhysics(),
               shrinkWrap: true,
@@ -164,8 +167,8 @@ class _InputFormPageState extends State<InputFormPage> {
                     print((response["lat"] as double).toString());
 
                     setState(() {
-                      _latlng =
-                          "${response["lat"] as double},${response["lng"] as double}";
+                      _latlng = LatLng(
+                          response["lat"] as double, response["lng"] as double);
                       updatepos(_latlng);
                     });
                   },
