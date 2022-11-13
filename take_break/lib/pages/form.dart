@@ -278,14 +278,23 @@ class _InputFormPageState extends State<InputFormPage> {
           );
 
           return Center(
+              child: SingleChildScrollView(
+                  child: SizedBox(
+            height: height,
             child: Column(
               children: [
                 Expanded(flex: 2, child: searchbar),
-                Expanded(flex: 6, child: map),
+                SizedBox(
+                  height: 20,
+                ),
+                Expanded(flex: 4, child: map),
+                SizedBox(
+                  height: 20,
+                ),
                 Expanded(flex: 4, child: forms),
               ],
             ),
-          );
+          )));
         }));
   }
 }
