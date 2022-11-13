@@ -13,6 +13,7 @@ def get_trip(latitude, longtitude, dateTime):
     payload, headers= {}, {}
     dateTimeFormatted = f"{dateTime[:10]}T{dateTime[11:19].replace(':','%3A')}Z"
     LAT_LNG_MULTIPLIER = 111139
+    MAPS_API_TOKEN = "AIzaSyD5DqXn4kkLZAks-koDJEnR8FeMi1fnMvo"
 
     # Retrieve Inrix Authentication Token
     INRIX_AUTH_URL = "https://api.iq.inrix.com/auth/v1/appToken?appId=fkueo2tfv7&hashToken=Zmt1ZW8ydGZ2N3xMV21QS1NLV2dQODcyRTJwN1lyYnNhTjN6RnM4RHJZMDE3QjhRamcx"
@@ -25,12 +26,12 @@ def get_trip(latitude, longtitude, dateTime):
     coords = response.text[response.text.index("<posList>")+len("<posList>"):response.text.index("</posList>")].split()
     radius = LAT_LNG_MULTIPLIER * math.sqrt((float(coords[0])-float(latitude))**2 + (float(coords[1])-float(longtitude))**2)
 
-    MAPS_API_TOKEN = "AIzaSyD5DqXn4kkLZAks-koDJEnR8FeMi1fnMvo"
-
+    # Lists for categories/locations
     fun_categories = ["amusement_park", "aquarium", "art_gallery", "bowling_alley", "book_store", "casino", "night_club", "museum", "park", "spa", "tourist_attraction", "zoo"]
     food_categories = ["cafe", "restaurant", "bar"]
     fun_locations, food_locations = [], []             
 
+    # For loop through categories 
     for category in fun_categories+food_categories:
         PLACES_URL = f"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={latitude}%2C{longtitude}&radius={radius}&type={category}&key={MAPS_API_TOKEN}"
         response = requests.request("GET", PLACES_URL, headers=headers, data=payload).json().get("results")
@@ -48,14 +49,13 @@ def get_trip(latitude, longtitude, dateTime):
             location = {} 
             location["types"] = place.get("types")
             location["name"] = place.get("name")
-            location["address"] = place.get("formatted_address")
             location["price"] = place.get("price_level")
             #location["open_time"] = response["opening_hours"]["periods"][DAY_OF_WEEK].get("open").get("time")
             #location["close_time"] = response["opening_hours"]["periods"][DAY_OF_WEEK].get("close").get("time")
 
             # Find route and add travel time to location object
-            location["lat"] = place["geometry"]["location"]["lat"]
-            location["long"] = place["geometry"]["location"]["lng"]                       
+            location["latitude"] = place["geometry"]["location"]["lat"]
+            location["longtitude"] = place["geometry"]["location"]["lng"]                       
 
             # Append location to list of locations
             for loc_type in location["types"]:
@@ -67,11 +67,15 @@ def get_trip(latitude, longtitude, dateTime):
     trips = {}
     trips["trips"] = []
     for _ in range(3):
+
+        # Parse time and add locations/parking list
         time = int(dateTime[11:13]+dateTime[14:16])
         trip, coordinates = {}, [[latitude, longtitude]]
-        trip["locations"] = []
+        trip["locations"], trip["parking"] = [], []
+
         for _ in range(3):
 
+            # Choose food/fun depending on time
             if (time > 1300 and time < 1500) or (time > 1930 and time < 2100):
                 location = random.choice(food_locations)
                 food_locations.remove(location)
@@ -79,15 +83,20 @@ def get_trip(latitude, longtitude, dateTime):
                 location = random.choice(fun_locations)
                 fun_locations.remove(location)
             
-            coordinates.append([location["lat"], location["long"]])
+            # Append coordinates and location to response
+            location_latitude, location_longtitude = location["latitude"], location["longtitude"]
+            coordinates.append([location_latitude, location_longtitude])
             trip["locations"].append(location)
-            time += 200
             
+            time += 200
+        
+        # Add coordinates to route query
         findRouteQuery = ''
         coordinates.append([latitude, longtitude])
         for i in range(1,6):
             findRouteQuery += f"wp_{i}={coordinates[i-1][0]}%2C{coordinates[i-1][1]}0&"
         
+        # Add travel time to trips
         ROUTE_URL = f"https://api.iq.inrix.com/findRoute?{findRouteQuery}format=json&token={INRIX_TOKEN}"
         response = requests.request("GET", ROUTE_URL, headers=headers, data=payload).json().get("result").get("trip")
         travel_time = response["routes"][0]["travelTimeMinutes"]
@@ -98,3 +107,13 @@ def get_trip(latitude, longtitude, dateTime):
 
 if __name__ == '__main__':
     app.run()
+
+# Add parking to response object
+# PARKING_URL = f"https://api.iq.inrix.com/lots/v3?point={location_latitude}%7C{location_longtitude}&radius=500"
+# response = requests.request("GET", PARKING_URL, headers=headers, data=payload).json().get("result")
+# parking_lot = {}
+# address_endpoint = response.get("navigationAddress")
+# parking_address = [address_endpoint.get("street"), address_endpoint.get("city"), address_endpoint.get("state"), address_endpoint.get("postal")]
+# parking_lot["name"] = response.get("name")
+# parking_lot["address"] = f"{parking_address[0]}, {parking_address[1]}, {parking_address[2]}, {parking_address[3]}"
+# trip["parking"].append(parking_lot)
