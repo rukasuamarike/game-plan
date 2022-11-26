@@ -24,7 +24,7 @@ class _InputFormPageState extends State<InputFormPage> {
   TimeOfDay selectedTime = TimeOfDay.now();
   TimeOfDay selectedEnd = TimeOfDay.now();
   bool tset = false;
-
+  dynamic k = "";
   CollectionReference jobsRef = FirebaseFirestore.instance.collection("jobs");
   final Location _location = Location();
   String? _sessionToken = null;
@@ -292,7 +292,19 @@ class _InputFormPageState extends State<InputFormPage> {
                   height: 20,
                 ),
                 Expanded(flex: 4, child: forms),
-                ElevatedButton(onPressed: () {}, child: Text("submit"))
+                ElevatedButton(
+                    onPressed: () async {
+                      String base = "http://127.0.0.1:5000/dashboard";
+                      String req =
+                          "${base}/${(location.latitude as double).toString()}/${(location.longitude as double).toString()}/${DateTime.now().toUtc().toString()}";
+                      var response = await http.get(Uri.parse(req)).then(
+                          (value) =>
+                              jsonDecode(value.body)["trips"] as List<dynamic>);
+                      print(response);
+                      k = response;
+                    },
+                    child: Text("submit")),
+                Text(k)
               ],
             ),
           )));
